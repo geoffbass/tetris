@@ -1,0 +1,13 @@
+.filled {
+  background-color: blue;
+}
+
+.empty {
+  background-color: transparent;
+}
+
+.block {
+  border: 2px solid black;
+  height: 2vh;
+  width: 2vh;
+}
