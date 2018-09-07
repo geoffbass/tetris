@@ -1,83 +1,12 @@
 import { render } from 'react-dom';
 import React, { Component } from 'react';
 
-const z0 = new Set([
-  {
-    row: -1,
-    col: -1,
-  },
-  {
-    row: -1,
-    col: 0,
-  },
-  {
-    row: 0,
-    col: 1,
-  },
-  {
-    row: 0,
-    col: 0,
-  },
-]);
+import { z0, z90, z180, z270 } from './tetrominos/z.js';
+import { s0, s90, s180, s270 } from './tetrominos/s.js';
 
-const z90 = new Set([
-  {
-    row: -1,
-    col: 1,
-  },
-  {
-    row: 0,
-    col: 1,
-  },
-  {
-    row: 1,
-    col: 0,
-  },
-  {
-    row: 0,
-    col: 0,
-  },
-]);
-
-const z180 = new Set([
-  {
-    row: 1,
-    col: 1,
-  },
-  {
-    row: 1,
-    col: 0,
-  },
-  {
-    row: 0,
-    col: -1,
-  },
-  {
-    row: 0,
-    col: 0,
-  },
-]);
-
-const z270 = new Set([
-  {
-    row: 1,
-    col: -1,
-  },
-  {
-    row: 0,
-    col: -1,
-  },
-  {
-    row: -1,
-    col: 0,
-  },
-  {
-    row: 0,
-    col: 0,
-  },
-]);
-
-const randomTetromino = () => z0;
+const initialTetrominos = [z0, s0];
+const randomTetromino = () =>
+  initialTetrominos[Math.floor(Math.random() * initialTetrominos.length)];
 
 const rotationsMap = new Map();
 
@@ -85,6 +14,10 @@ rotationsMap.set(z0, z90);
 rotationsMap.set(z90, z180);
 rotationsMap.set(z180, z270);
 rotationsMap.set(z270, z0);
+rotationsMap.set(s0, s90);
+rotationsMap.set(s90, s180);
+rotationsMap.set(s180, s270);
+rotationsMap.set(s270, s0);
 
 const tetrominoCoords = (center, diffs) => {
   const coords = new Set();
