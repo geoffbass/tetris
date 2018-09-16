@@ -1,23 +1,51 @@
 import { render } from 'react-dom';
 import React, { Component } from 'react';
 
-import { z0, z90, z180, z270 } from './tetrominos/z.js';
+import { i0, i90, i180, i270 } from './tetrominos/i.js';
+import { j0, j90, j180, j270 } from './tetrominos/j.js';
+import { l0, l90, l180, l270 } from './tetrominos/l.js';
+import { o0 } from './tetrominos/o.js';
 import { s0, s90, s180, s270 } from './tetrominos/s.js';
+import { t0, t90, t180, t270 } from './tetrominos/t.js';
+import { z0, z90, z180, z270 } from './tetrominos/z.js';
 
-const initialTetrominos = [z0, s0];
+const initialTetrominos = [i0, j0, l0, o0, s0, t0, z0];
 const randomTetromino = () =>
   initialTetrominos[Math.floor(Math.random() * initialTetrominos.length)];
 
 const rotationsMap = new Map();
 
-rotationsMap.set(z0, z90);
-rotationsMap.set(z90, z180);
-rotationsMap.set(z180, z270);
-rotationsMap.set(z270, z0);
+rotationsMap.set(i0, i90);
+rotationsMap.set(i90, i180);
+rotationsMap.set(i180, i270);
+rotationsMap.set(i270, i0);
+
+rotationsMap.set(j0, j90);
+rotationsMap.set(j90, j180);
+rotationsMap.set(j180, j270);
+rotationsMap.set(j270, j0);
+
+rotationsMap.set(l0, l90);
+rotationsMap.set(l90, l180);
+rotationsMap.set(l180, l270);
+rotationsMap.set(l270, l0);
+
+rotationsMap.set(o0, o0);
+
 rotationsMap.set(s0, s90);
 rotationsMap.set(s90, s180);
 rotationsMap.set(s180, s270);
 rotationsMap.set(s270, s0);
+
+rotationsMap.set(t0, t90);
+rotationsMap.set(t90, t180);
+rotationsMap.set(t180, t270);
+rotationsMap.set(t270, t0);
+
+rotationsMap.set(z0, z90);
+rotationsMap.set(z90, z180);
+rotationsMap.set(z180, z270);
+rotationsMap.set(z270, z0);
 
 const tetrominoCoords = (center, diffs) => {
   const coords = new Set();
@@ -104,7 +132,7 @@ class App extends Component {
           matrix: nextMatrix,
         });
       }
-    }, 500);
+    }, 200);
 
     document.addEventListener('keypress', this.handleKeyPress);
   }
