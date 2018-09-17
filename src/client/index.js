@@ -77,16 +77,17 @@ const Cell = ({ cell }) => (
   <td className={`block ${cell.filled ? 'filled' : 'empty'}`} />
 );
 
-const emptyMatrix = Array(18).fill([
-  ...Array(10).fill(
+const createEmptyRow = () =>
+  Array(10).fill(
     Object.assign(
       {},
       {
         filled: false,
       }
     )
-  ),
-]);
+  );
+
+const emptyMatrix = Array(18).fill([...createEmptyRow()]);
 
 class App extends Component {
   constructor(props) {
@@ -96,6 +97,7 @@ class App extends Component {
       diffs: randomTetromino(),
       foundation: emptyMatrix,
       matrix: emptyMatrix,
+      totalLinesCleared: 0,
     };
     this.calculateMatrix = this.calculateMatrix.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
@@ -109,21 +111,16 @@ class App extends Component {
       };
       const nextCoords = tetrominoCoords(nextCenter, this.state.diffs);
 
-      let collidedWithFoundation = false;
-      nextCoords.forEach(pair => {
-        if (
-          !this.state.foundation[pair.row] ||
-          this.state.foundation[pair.row][pair.col].filled
-        ) {
-          collidedWithFoundation = true;
-        }
-      });
+      if (this.collidedWithFoundation(nextCoords)) {
+        const linesCleared = this.countFilledRows(this.state.matrix);
 
-      if (collidedWithFoundation) {
+        const nextMatrix = this.clearFilledRows(this.state.matrix);
+
         this.setState(prevState => ({
           center: { row: 2, col: 4 },
           diffs: randomTetromino(),
-          foundation: prevState.matrix,
+          foundation: nextMatrix,
+          totalLinesCleared: prevState.totalLinesCleared + linesCleared,
         }));
       } else {
         const nextMatrix = this.calculateMatrix(nextCoords);
@@ -132,7 +129,7 @@ class App extends Component {
           matrix: nextMatrix,
         });
       }
-    }, 200);
+    }, 300);
 
     document.addEventListener('keypress', this.handleKeyPress);
   }
@@ -147,6 +144,38 @@ class App extends Component {
     });
 
     return nextMatrix;
+  }
+
+  clearFilledRows(matrix) {
+    const nextMatrix = matrix.filter(row => row.some(cell => !cell.filled));
+
+    while (nextMatrix.length < 18) {
+      nextMatrix.unshift(createEmptyRow());
+    }
+
+    return nextMatrix;
+  }
+
+  collidedWithFoundation(nextCoords) {
+    let collided = false;
+    nextCoords.forEach(pair => {
+      if (
+        !this.state.foundation[pair.row] ||
+        this.state.foundation[pair.row][pair.col].filled
+      ) {
+        collided = true;
+      }
+    });
+
+    return collided;
+  }
+
+  countFilledRows(matrix) {
+    return matrix.reduce(
+      (numFilledRows, row) =>
+        numFilledRows + (row.some(cell => !cell.filled) ? 0 : 1),
+      0
+    );
   }
 
   handleKeyPress(keyPressEvent) {
@@ -194,7 +223,12 @@ class App extends Component {
   }
 
   render() {
-    return <Well matrix={this.state.matrix} />;
+    return (
+      <React.Fragment>
+        <Well matrix={this.state.matrix} />
+        <h3>Lines Cleared: {this.state.totalLinesCleared}</h3>
+      </React.Fragment>
+    );
   }
 }
 
